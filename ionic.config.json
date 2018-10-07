@@ -1,0 +1,8 @@
+{
+  "name": "SpeedoMeter",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular",
+  "pro_id": "e7e21afd"
+}
