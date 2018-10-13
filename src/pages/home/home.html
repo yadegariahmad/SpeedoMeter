@@ -1,14 +1,18 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      صفحه اصلی
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <div class="img-container">
+    <ion-img src="assets/imgs/homepage_logo.png"></ion-img>
+  </div>
+
+  <div class="btn-container margin-top">
+    <button ion-button full margin-top color="secondary" (click)="navigateToCalculationPage()">محاسبه سرعت</button>
+    <button ion-button full margin-top>تاریخچه</button>
+  </div>
 </ion-content>
