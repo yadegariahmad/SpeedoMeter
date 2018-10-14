@@ -11,15 +11,13 @@ import { DistanceCalculationProvider, MoveType } from '../../providers';
   selector: 'page-calculator',
   templateUrl: 'calculator.html',
 })
-export class CalculatorPage
-{
+export class CalculatorPage {
   Type = MoveType;
   calculating = false;
   _moveType = 1;
   distanceCovered: number;
   speed: number;
   watch: Subscription;
-  aaa = 0;
 
   lat1: number;
   lon1: number;
@@ -32,19 +30,15 @@ export class CalculatorPage
   constructor(public navCtrl: NavController, public navParams: NavParams, public diagnostic: Diagnostic, public alertCtrl: AlertController,
     public openSettings: OpenNativeSettings, public gps: Geolocation, private distCal: DistanceCalculationProvider) { }
 
-  startCalculation()
-  {
+  startCalculation() {
     this.distanceCovered = 0;
     this.speed = 0;
 
     this.diagnostic.isGpsLocationEnabled()
-      .then(status =>
-      {
-        if (status)
-        {
+      .then(status => {
+        if (status) {
           this.calculateSpeed();
-        } else
-        {
+        } else {
           let alert = this.alertCtrl.create({
             title: 'فعال نیست GPS',
             message: 'لطفا موقعیت یاب دستگاه خود را روشن کنید',
@@ -56,8 +50,7 @@ export class CalculatorPage
               },
               {
                 text: 'Ok',
-                handler: () =>
-                {
+                handler: () => {
                   this.openSettings.open('location');
                 }
               }
@@ -68,26 +61,24 @@ export class CalculatorPage
       })
   }
 
-  stopCalculation()
-  {
+  stopCalculation() {
     this.calculating = false;
     this.watch.unsubscribe();
   }
 
-  calculateSpeed()
-  {
+  calculateSpeed() {
     let date = new Date();
     this.calculating = true;
 
-    this.gps.getCurrentPosition().then(data =>
-    {
+    this.gps.getCurrentPosition().then(data => {
       this.lat1 = this.lat2 = data.coords.latitude;
       this.lon1 = this.lon2 = data.coords.longitude;
 
+      console.log('1: ', this.lat1, ' ', this.lon1);
+
       this.time1 = this.time2 = date.getTime();
 
-      this.watch = this.gps.watchPosition().subscribe(data =>
-      {
+      this.watch = this.gps.watchPosition().subscribe(data => {
         this.lat1 = this.lat2;
         this.lon1 = this.lon2;
 
@@ -95,14 +86,16 @@ export class CalculatorPage
         this.lon2 = data.coords.longitude;
 
         let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
+        distance = Math.floor(distance);
+        console.log('2: ', distance)
         let duration = 0;
         this.time1 = this.time2;
         this.time2 = new Date().getTime();
 
-        let timeDiffer = this.aaa = this.time2 - this.time1;
+        let timeDiffer = this.time2 - this.time1;
+        console.log('3: ', timeDiffer);
 
-        switch (this._moveType)
-        {
+        switch (this._moveType) {
           case this.Type.walk:
             distance = distance * 1000; // convert km to m;
             duration = this.msToTime(timeDiffer, 'second');
@@ -114,31 +107,30 @@ export class CalculatorPage
           default:
             break;
         }
+        console.log('4: ', duration);
+
         this.distanceCovered += distance;
-        this.speed = distance / duration;
+        this.speed = (duration > 0) ? (distance / duration) : 0;
       });
-    }).catch(error =>
-    {
-      this.aaa = error;
+    }).catch(error => {
+      console.log(error);
     });
   }
 
-  msToTime(duration, type: string)
-  {
+  msToTime(duration, type: string) {
     let retVal = 0;
 
-    switch (type)
-    {
+    switch (type) {
       case 'second':
-        retVal = (duration / 1000) % 60;
+        retVal = (duration / 1000);
         break;
 
       case 'minute':
-        retVal = (duration / (1000 * 60)) % 60;
+        retVal = (duration / (1000 * 60));
         break;
 
       case 'hour':
-        retVal = (duration / (1000 * 60 * 60)) % 24;
+        retVal = (duration / (1000 * 60 * 60));
         break;
 
       default:
