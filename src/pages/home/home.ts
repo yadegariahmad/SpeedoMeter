@@ -5,9 +5,11 @@ import { NavController } from 'ionic-angular';
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage {
+export class HomePage
+{
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController)
+  {
     // setInterval(() => {
     // 	diagnostic.isGpsLocationEnabled()
     // 		.then(status => {
@@ -23,8 +25,14 @@ export class HomePage {
     // });
   }
 
-  navigateToCalculationPage() {
+  navigateToCalculationPage()
+  {
     this.navCtrl.push('calculation-page');
+  }
+
+  navigateToHistoryPage()
+  {
+    this.navCtrl.push('history-page');
   }
 
 }
