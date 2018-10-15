@@ -6,26 +6,21 @@
 
 
 <ion-content padding>
-  <ion-list radio-group disabled="calculating" [(ngModel)]="_moveType">
-    <ion-list-header text-right>
-      نوع حرکت
-    </ion-list-header>
+  <ion-item class="rtl">
+    <ion-label>نوع حرکت</ion-label>
+    <ion-select interface="popover" [(ngModel)]="_moveType">
+      <ion-option value="1">
+        <ion-icon item-right name="car"></ion-icon>
+        ماشین
+      </ion-option>
+      <ion-option value="2">
+        <ion-icon item-left name="walk"></ion-icon>
+        پیاده
+      </ion-option>
+    </ion-select>
+  </ion-item>
 
-    <ion-item>
-      <ion-icon item-left name="car"></ion-icon>
-      <ion-label>ماشین</ion-label>
-      <ion-radio value="1" checked="true"></ion-radio>
-    </ion-item>
-
-    <ion-item>
-      <ion-icon item-left name="walk"></ion-icon>
-      <ion-label>پیاده</ion-label>
-      <ion-radio value="2"></ion-radio>
-    </ion-item>
-
-  </ion-list>
-
-  <ion-card>
+  <ion-card class="rtl">
     <ion-card-content>
       <ion-grid>
         <ion-row>
@@ -33,7 +28,8 @@
             <ion-label>فاصله پیموده شده:</ion-label>
           </ion-col>
           <ion-col>
-            <h2 margin-top float-left ion-text>{{_moveType == Type.walk ? 'm' : 'km'}} {{distanceCovered | convertdigit}}</h2>
+            <h2 margin-top float-left ion-text>{{_moveType == Type.walk ? 'm' : 'km'}} {{distanceCovered |
+              convertdigit}}</h2>
           </ion-col>
         </ion-row>
 
