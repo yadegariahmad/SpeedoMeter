@@ -138,7 +138,7 @@ export class CalculatorPage
 
           case this.Type.car:
             this.speed = this.mPerSecondToKmPerHour(Math.floor(distance / duration));
-            distance *= distance / 1000;
+            distance = distance / 1000;
             break;
 
           default:
