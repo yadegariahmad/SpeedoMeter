@@ -8,7 +8,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Geolocation } from '@ionic-native/geolocation';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings';
-import { LocationAccuracy } from '@ionic-native/location-accuracy';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -37,13 +36,12 @@ import { DigitConvertorProvider } from '../providers/digit-convertor/digit-conve
     Diagnostic,
     Geolocation,
     OpenNativeSettings,
-    LocationAccuracy,
 
     // Providers
     DistanceCalculationProvider,
+    DigitConvertorProvider,
 
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    DigitConvertorProvider,
   ]
 })
 export class AppModule {}

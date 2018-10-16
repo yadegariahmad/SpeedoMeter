@@ -11,7 +11,7 @@ export class HistoryPage
 {
   history: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private storage: Storage)
+  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage)
   {
     storage.get('history').then(data =>
     {

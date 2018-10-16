@@ -11,8 +11,6 @@ export class DistanceCalculationProvider
     let retVal: number;
 
     const earthRadius = 6371000;
-    // lat1 = this.toRadians(lat1);
-    // lat2 = this.toRadians(lat2);
 
     let delta_lat = this.toRadians(lat2 - lat1);
     let delta_lon = this.toRadians(lon2 - lon1);

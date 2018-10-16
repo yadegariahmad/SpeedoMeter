@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Subscription } from 'rxjs/subscription'
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings';
 import { Geolocation } from '@ionic-native/geolocation';
-import { LocationAccuracy } from '@ionic-native/location-accuracy';
-import { DistanceCalculationProvider, MoveType } from '../../providers';
+import { DistanceCalculationProvider } from '../../providers';
 
 @IonicPage({ name: 'calculation-page' })
 @Component({
@@ -15,9 +14,7 @@ import { DistanceCalculationProvider, MoveType } from '../../providers';
 })
 export class CalculatorPage
 {
-  Type = MoveType;
   calculating = false;
-  _moveType = 1;
   distanceCovered: number;
   speed: number;
   watch: Subscription;
@@ -29,24 +26,42 @@ export class CalculatorPage
 
   time1: number;
   time2: number;
+  aaa: any;
 
   history: any[] = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public diagnostic: Diagnostic, public alertCtrl: AlertController,
-    public openSettings: OpenNativeSettings, public gps: Geolocation, public distCal: DistanceCalculationProvider,
-    public accuracy: LocationAccuracy, public storage: Storage) { }
+    public openSettings: OpenNativeSettings, public gps: Geolocation, public distCal: DistanceCalculationProvider, public storage: Storage,
+    public loading: LoadingController) { }
 
-  startCalculation()
+  ionViewDidLoad()
   {
-    this.distanceCovered = 0;
-    this.speed = 0;
-
     this.diagnostic.isGpsLocationEnabled()
       .then(status =>
       {
         if (status)
         {
-          this.optimizeLocationAccuracy();
+          let loading = this.loading.create({
+            content: 'درحال دریافت موقعیت مکانی شما',
+          });
+          loading.present();
+
+          this.gps.getCurrentPosition({ enableHighAccuracy: true })
+            .then(data =>
+            {
+              this.lat1 = this.lat2 = data.coords.latitude;
+              this.lon1 = this.lon2 = data.coords.longitude;
+
+              this.time1 = this.time2 = new Date().getTime();
+
+              this.aaa = { lat: this.lat1, lon: this.lon1, time: this.time1 }
+              loading.dismiss();
+            })
+            .catch(error =>
+            {
+              loading.dismiss();
+              this.alertCtrl.create({ message: error });
+            });
         } else
         {
           let alert = this.alertCtrl.create({
@@ -62,6 +77,7 @@ export class CalculatorPage
                 text: 'Ok',
                 handler: () =>
                 {
+                  this.navCtrl.pop();
                   this.openSettings.open('location');
                 }
               }
@@ -69,7 +85,14 @@ export class CalculatorPage
           });
           alert.present();
         }
-      })
+      });
+  }
+
+  startCalculation()
+  {
+    this.distanceCovered = 0;
+    this.speed = 0;
+    this.calculateSpeed();
   }
 
   stopCalculation()
@@ -79,84 +102,43 @@ export class CalculatorPage
     this.storage.set('history', this.history);
   }
 
-  optimizeLocationAccuracy()
-  {
-    this.accuracy.canRequest().then(canRequest =>
-    {
-      if (canRequest)
-      {
-        this.accuracy.request(this.accuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(
-          () => this.calculateSpeed(),
-          (error) => { console.log(error); this.calculateSpeed() }
-        );
-      } else
-      {
-        this.calculateSpeed();
-      }
-    });
-  }
-
   calculateSpeed()
   {
     let date = new Date();
     this.calculating = true;
 
-    this.gps.getCurrentPosition().then(data =>
+    this.watch = this.gps.watchPosition({ enableHighAccuracy: true }).subscribe(data =>
     {
-      this.lat1 = this.lat2 = data.coords.latitude;
-      this.lon1 = this.lon2 = data.coords.longitude;
+      this.lat1 = this.lat2;
+      this.lon1 = this.lon2;
 
-      console.log('1: ', this.lat1, ' ', this.lon1);
+      this.lat2 = data.coords.latitude;
+      this.lon2 = data.coords.longitude;
 
-      this.time1 = this.time2 = date.getTime();
+      this.time1 = this.time2;
+      this.time2 = date.getTime();
 
-      this.watch = this.gps.watchPosition().subscribe(data =>
-      {
-        this.lat1 = this.lat2;
-        this.lon1 = this.lon2;
+      let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
 
-        this.lat2 = data.coords.latitude;
-        this.lon2 = data.coords.longitude;
+      let duration = 0;
 
-        this.time1 = this.time2;
-        this.time2 = new Date().getTime();
+      let timeDiffer = this.time2 - this.time1;
+      duration = this.msToTime(timeDiffer, 'second');
 
-        let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
-        console.log('2: ', distance);
+      this.speed = this.mPerSecondToKmPerHour(Math.floor(distance / duration));
+      distance = distance / 1000;
 
-        let duration = 0;
+      this.distanceCovered += Math.floor(distance);
 
-        let timeDiffer = this.time2 - this.time1;
-        duration = Math.floor(this.msToTime(timeDiffer, 'second'));
-        console.log('3: ', timeDiffer, ' ', duration);
-
-        switch (this._moveType)
-        {
-          case this.Type.walk:
-            this.speed = Math.floor(distance / duration);
-            break;
-
-          case this.Type.car:
-            this.speed = this.mPerSecondToKmPerHour(Math.floor(distance / duration));
-            distance = distance / 1000;
-            break;
-
-          default:
-            break;
-        }
-
-        this.distanceCovered += Math.floor(distance);
-
-        this.history.push({
-          distance: distance,
-          duration: duration,
-          speed: this.speed,
-          distCover: this.distanceCovered
-        });
+      this.history.push({
+        lat: data.coords.latitude,
+        lon: data.coords.longitude,
+        time: date.getTime()
+        // distance: this.aaa,
+        // duration: timeDiffer,
+        // speed: this.speed,
+        // distCover: this.distanceCovered
       });
-    }).catch(error =>
-    {
-      console.log(error);
     });
   }
 
