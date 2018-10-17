@@ -24,8 +24,8 @@ export class CalculatorPage
   lat2: number;
   lon2: number;
 
-  time1: number;
-  time2: number;
+  time1 = 0;
+  time2 = 0;
   aaa: any;
 
   history: any[] = [];
@@ -51,8 +51,6 @@ export class CalculatorPage
             {
               this.lat1 = this.lat2 = data.coords.latitude;
               this.lon1 = this.lon2 = data.coords.longitude;
-
-              this.time1 = this.time2 = new Date().getTime();
 
               this.aaa = { lat: this.lat1, lon: this.lon1, time: this.time1 }
               loading.dismiss();
@@ -92,6 +90,7 @@ export class CalculatorPage
   {
     this.distanceCovered = 0;
     this.speed = 0;
+    this.calculating = true;
     this.calculateSpeed();
   }
 
@@ -105,41 +104,80 @@ export class CalculatorPage
   calculateSpeed()
   {
     let date = new Date();
-    this.calculating = true;
 
-    this.watch = this.gps.watchPosition({ enableHighAccuracy: true }).subscribe(data =>
+    if (this.calculating)
     {
-      this.lat1 = this.lat2;
-      this.lon1 = this.lon2;
+      this.gps.getCurrentPosition({ enableHighAccuracy: true })
+        .then(data =>
+        {
+          this.lat1 = this.lat2;
+          this.lon1 = this.lon2;
 
-      this.lat2 = data.coords.latitude;
-      this.lon2 = data.coords.longitude;
+          this.lat2 = data.coords.latitude;
+          this.lon2 = data.coords.longitude;
 
-      this.time1 = this.time2;
-      this.time2 = date.getTime();
+          this.time1 = this.time2;
+          this.time2 = date.getTime();
 
-      let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
+          let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
 
-      let duration = 0;
+          let duration = 0;
 
-      let timeDiffer = this.time2 - this.time1;
-      duration = this.msToTime(timeDiffer, 'second');
+          let timeDiffer = this.time2 - this.time1;
+          duration = this.msToTime(timeDiffer, 'second');
 
-      this.speed = this.mPerSecondToKmPerHour(Math.floor(distance / duration));
-      distance = distance / 1000;
+          this.speed = this.mPerSecondToKmPerHour(Math.floor(distance / duration));
+          distance = distance / 1000;
 
-      this.distanceCovered += Math.floor(distance);
+          this.distanceCovered += Math.floor(distance);
 
-      this.history.push({
-        lat: data.coords.latitude,
-        lon: data.coords.longitude,
-        time: date.getTime()
-        // distance: this.aaa,
-        // duration: timeDiffer,
-        // speed: this.speed,
-        // distCover: this.distanceCovered
-      });
-    });
+          this.calculateSpeed();
+
+          this.history.push({
+            lat: data.coords.latitude,
+            lon: data.coords.longitude,
+            time: date.getTime()
+            // distance: this.aaa,
+            // duration: timeDiffer,
+            // speed: this.speed,
+            // distCover: this.distanceCovered
+          });
+        });
+    }
+
+    // this.watch = this.gps.watchPosition({ enableHighAccuracy: true }).subscribe(data =>
+    // {
+    //   this.lat1 = this.lat2;
+    //   this.lon1 = this.lon2;
+
+    //   this.lat2 = data.coords.latitude;
+    //   this.lon2 = data.coords.longitude;
+
+    //   this.time1 = this.time2;
+    //   this.time2 = date.getTime();
+
+    //   let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
+
+    //   let duration = 0;
+
+    //   let timeDiffer = this.time2 - this.time1;
+    //   duration = this.msToTime(timeDiffer, 'second');
+
+    //   this.speed = this.mPerSecondToKmPerHour(Math.floor(distance / duration));
+    //   distance = distance / 1000;
+
+    //   this.distanceCovered += Math.floor(distance);
+
+    //   this.history.push({
+    //     lat: data.coords.latitude,
+    //     lon: data.coords.longitude,
+    //     time: date.getTime()
+    //     // distance: this.aaa,
+    //     // duration: timeDiffer,
+    //     // speed: this.speed,
+    //     // distCover: this.distanceCovered
+    //   });
+    // });
   }
 
   msToTime(duration, type: string)
