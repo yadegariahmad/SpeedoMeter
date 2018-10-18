@@ -1,18 +1,16 @@
-<!-- <ion-header>
-  <ion-navbar>
-    <ion-title>
-      صفحه اصلی
-    </ion-title>
-  </ion-navbar>
-</ion-header> -->
-
 <ion-content padding class="home">
-  <!-- <ion-item class="img-container">
-    <img src="assets/imgs/homepage_logo.png" >
-  </ion-item> -->
-
-  <!-- <div class="btn-container"> -->
-    <button ion-button full round color="secondary" (click)="navigateToCalculationPage()">محاسبه سرعت<ion-icon name="speedometer" margin></ion-icon></button>
-    <button ion-button full round (click)="navigateToHistoryPage()">تاریخچه<ion-icon name="list-box" margin></ion-icon></button>
-  <!-- </div> -->
+  <ion-grid>
+    <ion-row align-items-end>
+      <ion-col col-6 offset-2 text-center>
+        <button class="round-btn" ion-button large (click)="navigateToCalculationPage()" margin-right>
+          <span>شروع</span>
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row align-items-end>
+      <ion-col>
+        <button ion-button full round large color="secondary" (click)="navigateToHistoryPage()">تاریخچه<ion-icon name="list-box" margin></ion-icon></button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
