@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { Subscription } from 'rxjs/subscription'
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -17,7 +16,6 @@ export class CalculatorPage
   calculating = false;
   distanceCovered: number;
   speed: number;
-  watch: Subscription;
 
   lat1: number;
   lon1: number;
@@ -26,7 +24,6 @@ export class CalculatorPage
 
   time1 = 0;
   time2 = 0;
-  aaa: any;
 
   history: any[] = [];
 
@@ -52,8 +49,8 @@ export class CalculatorPage
               this.lat1 = this.lat2 = data.coords.latitude;
               this.lon1 = this.lon2 = data.coords.longitude;
 
-              this.aaa = { lat: this.lat1, lon: this.lon1, time: this.time1 }
               loading.dismiss();
+              this.startCalculation();
             })
             .catch(error =>
             {
@@ -97,7 +94,6 @@ export class CalculatorPage
   stopCalculation()
   {
     this.calculating = false;
-    this.watch.unsubscribe();
     this.storage.set('history', this.history);
   }
 
@@ -129,7 +125,7 @@ export class CalculatorPage
           this.speed = this.mPerSecondToKmPerHour(Math.floor(distance / duration));
           distance = distance / 1000;
 
-          this.distanceCovered += Math.floor(distance);
+          this.distanceCovered += distance;
 
           this.calculateSpeed();
 
@@ -144,40 +140,6 @@ export class CalculatorPage
           });
         });
     }
-
-    // this.watch = this.gps.watchPosition({ enableHighAccuracy: true }).subscribe(data =>
-    // {
-    //   this.lat1 = this.lat2;
-    //   this.lon1 = this.lon2;
-
-    //   this.lat2 = data.coords.latitude;
-    //   this.lon2 = data.coords.longitude;
-
-    //   this.time1 = this.time2;
-    //   this.time2 = date.getTime();
-
-    //   let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
-
-    //   let duration = 0;
-
-    //   let timeDiffer = this.time2 - this.time1;
-    //   duration = this.msToTime(timeDiffer, 'second');
-
-    //   this.speed = this.mPerSecondToKmPerHour(Math.floor(distance / duration));
-    //   distance = distance / 1000;
-
-    //   this.distanceCovered += Math.floor(distance);
-
-    //   this.history.push({
-    //     lat: data.coords.latitude,
-    //     lon: data.coords.longitude,
-    //     time: date.getTime()
-    //     // distance: this.aaa,
-    //     // duration: timeDiffer,
-    //     // speed: this.speed,
-    //     // distCover: this.distanceCovered
-    //   });
-    // });
   }
 
   msToTime(duration, type: string)

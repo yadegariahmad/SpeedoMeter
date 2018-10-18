@@ -10,14 +10,12 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
 import { DistanceCalculationProvider } from '../providers/distance-calculation/distance-calculation';
 import { DigitConvertorProvider } from '../providers/digit-convertor/digit-convertor';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
   ],
   imports: [
     BrowserModule,
@@ -27,7 +25,6 @@ import { DigitConvertorProvider } from '../providers/digit-convertor/digit-conve
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
   ],
   providers: [
     // Native
