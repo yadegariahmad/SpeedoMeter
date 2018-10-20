@@ -89,5 +89,6 @@
     </plugin>
     <plugin name="cordova-open-native-settings" spec="^1.5.1" />
     <plugin name="cordova-plugin-request-location-accuracy" spec="^2.2.3" />
+    <plugin name="cordova-plugin-insomnia" spec="4.3.0" />
     <engine name="android" spec="7.1.1" />
 </widget>

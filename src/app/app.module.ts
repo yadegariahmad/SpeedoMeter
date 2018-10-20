@@ -8,6 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Geolocation } from '@ionic-native/geolocation';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings';
+import { Insomnia } from '@ionic-native/insomnia';
 
 import { MyApp } from './app.component';
 import { DistanceCalculationProvider } from '../providers/distance-calculation/distance-calculation';
@@ -33,6 +34,7 @@ import { DigitConvertorProvider } from '../providers/digit-convertor/digit-conve
     Diagnostic,
     Geolocation,
     OpenNativeSettings,
+    Insomnia,
 
     // Providers
     DistanceCalculationProvider,
