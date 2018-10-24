@@ -10,7 +10,7 @@
   <ion-card class="rtl">
     <ion-card-content>
       <ion-grid>
-        <ion-row>
+        <ion-row class="dist-content">
           <ion-col>
             <ion-label>فاصله پیموده شده:</ion-label>
           </ion-col>
@@ -19,7 +19,7 @@
           </ion-col>
         </ion-row>
 
-        <ion-row>
+        <ion-row class="speed-content">
           <ion-col>
             <ion-label>سرعت:</ion-label>
           </ion-col>
@@ -27,26 +27,13 @@
             <h2 margin-top float-left ion-text>{{speed | convertdigit}}</h2>
           </ion-col>
         </ion-row>
-      </ion-grid>
 
-      <!-- <ion-item *ngIf="calculating">
-        <div class="speedometer">
-          <span class="speed-marker-1">&nbsp;</span>
-          <span class="speed-marker-2">&nbsp;</span>
-          <span class="speed-marker-3">&nbsp;</span>
-          <span class="speed-marker-4">&nbsp;</span>
-          <span class="speed-marker-5">&nbsp;</span>
-          <span class="speed-marker-6">&nbsp;</span>
-          <span class="speed-marker-7">&nbsp;</span>
-          <span class="speed-marker-8">&nbsp;</span>
-          <span class="speed-marker-9">&nbsp;</span>
-          <span class="speed-marker-10">&nbsp;</span>
-          <span class="speed-marker-11">&nbsp;</span>
-          <span class="speed-marker-12">&nbsp;</span>
-          <span class="speed-marker-13">&nbsp;</span>
-          <p class="speed">{{speed}};<span>km/h</span></p>
-        </div>
-      </ion-item> -->
+        <ion-row class="map-content">
+          <ion-col>
+            <div id="mapid"></div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
     </ion-card-content>
   </ion-card>

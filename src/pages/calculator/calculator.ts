@@ -7,6 +7,8 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { Insomnia } from '@ionic-native/insomnia';
 import { DistanceCalculationProvider } from '../../providers';
 
+declare var L: any;
+
 @IonicPage({ name: 'calculation-page' })
 @Component({
   selector: 'page-calculator',
@@ -127,6 +129,9 @@ export class CalculatorPage
 
           this.time1 = this.time2;
           this.time2 = date.getTime();
+
+          let mymap = L.map('mapid').setView([51.505, -0.09], 13);
+          console.log('mm: ', mymap)
 
           let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
 
