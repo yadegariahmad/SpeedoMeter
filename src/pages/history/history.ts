@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+import { IonicPage, NavController } from 'ionic-angular';
+import { DatabaseProvider } from '../../providers/database/database';
 
 @IonicPage({ name: 'history-page' })
 @Component({
@@ -9,14 +9,26 @@ import { Storage } from '@ionic/storage';
 })
 export class HistoryPage
 {
-  history: any;
+  history: any[] = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public storage: Storage)
+  constructor(public navCtrl: NavController, private db: DatabaseProvider) { }
+
+  ionViewDidLoad()
   {
-    storage.get('history').then(data =>
-    {
-      this.history = data;
-    });
+    this.retrieveRecords();
+  }
+
+  retrieveRecords()
+  {
+    this.db.retrieveRecords()
+      .then((records: any) =>
+      {
+        this.history = records;
+      })
+      .catch((e) =>
+      {
+        console.log(e)
+      });
   }
 
 }

@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+import { IonicPage, NavController, AlertController, LoadingController } from 'ionic-angular';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Insomnia } from '@ionic-native/insomnia';
-import { DistanceCalculationProvider } from '../../providers';
+import { DistanceCalculationProvider, DatabaseProvider, UnitConvertorProvider } from '../../providers';
 
 declare var L: any;
 
@@ -25,20 +24,19 @@ export class CalculatorPage
   lat2: number;
   lon2: number;
 
+  s_lat: number;
+  s_lon: number;
+  d_lat: number;
+  d_lon: number;
+
   time1 = 0;
   time2 = 0;
+  totalTime = 0;
 
-  history: any[] = [];
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, public diagnostic: Diagnostic, public alertCtrl: AlertController,
-    public openSettings: OpenNativeSettings, public gps: Geolocation, public distCal: DistanceCalculationProvider, public storage: Storage,
-    public loading: LoadingController, public insomnia: Insomnia)
-  {
-    this.storage.get('history').then(data =>
-    {
-      this.history = data || [];
-    });
-  }
+  constructor(public navCtrl: NavController, private diagnostic: Diagnostic, private alertCtrl: AlertController, private insomnia: Insomnia,
+    private openSettings: OpenNativeSettings, private gps: Geolocation, private distCal: DistanceCalculationProvider,
+    private loading: LoadingController, private db: DatabaseProvider, private unitConv: UnitConvertorProvider
+  ) { }
 
   ionViewDidLoad()
   {
@@ -58,8 +56,8 @@ export class CalculatorPage
           this.gps.getCurrentPosition({ enableHighAccuracy: true })
             .then(data =>
             {
-              this.lat1 = this.lat2 = data.coords.latitude;
-              this.lon1 = this.lon2 = data.coords.longitude;
+              this.lat1 = this.lat2 = this.s_lat = data.coords.latitude;
+              this.lon1 = this.lon2 = this.s_lon = data.coords.longitude;
 
               loading.dismiss();
               this.startCalculation();
@@ -71,29 +69,7 @@ export class CalculatorPage
             });
         } else
         {
-          let alert = this.alertCtrl.create({
-            title: 'فعال نیست GPS',
-            message: 'لطفا موقعیت یاب دستگاه خود را روشن کنید',
-            buttons: [
-              {
-                text: 'Cancel',
-                role: 'cancel',
-                handler: () =>
-                {
-                  this.navCtrl.pop();
-                }
-              },
-              {
-                text: 'Ok',
-                handler: () =>
-                {
-                  this.navCtrl.pop();
-                  this.openSettings.open('location');
-                }
-              }
-            ]
-          });
-          alert.present();
+          this.createAlert();
         }
       });
   }
@@ -109,7 +85,9 @@ export class CalculatorPage
   stopCalculation()
   {
     this.calculating = false;
-    this.storage.set('history', this.history);
+    this.d_lat = this.lat2;
+    this.d_lon = this.lon2;
+    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered);
   }
 
   calculateSpeed()
@@ -138,52 +116,54 @@ export class CalculatorPage
           let duration = 0;
 
           let timeDiffer = this.time2 - this.time1;
-          duration = this.msToTime(timeDiffer, 'second');
+          duration = this.unitConv.msToSecond(timeDiffer);
+          this.totalTime += duration;
 
-          this.speed = +this.mPerSecondToKmPerHour(Math.floor(distance / duration)).toFixed(1);
+          this.speed = +this.unitConv.mPerSecondToKmPerHour(Math.floor(distance / duration)).toFixed(1);
           distance = +(distance / 1000).toFixed(2);
 
           this.distanceCovered += distance;
 
           this.calculateSpeed();
-
-          this.history.push({
-            time: duration,
-            distance: distance,
-            speed: this.speed
-          });
         });
     }
   }
 
-  msToTime(duration, type: string)
+  createAlert()
   {
-    let retVal = 0;
-
-    switch (type)
-    {
-      case 'second':
-        retVal = (duration / 1000);
-        break;
-
-      case 'minute':
-        retVal = (duration / (1000 * 60));
-        break;
-
-      case 'hour':
-        retVal = (duration / (1000 * 60 * 60));
-        break;
-
-      default:
-        break;
-    }
-
-    return retVal;
+    let alert = this.alertCtrl.create({
+      title: 'فعال نیست GPS',
+      message: 'لطفا موقعیت یاب دستگاه خود را روشن کنید',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () =>
+          {
+            this.navCtrl.pop();
+          }
+        },
+        {
+          text: 'Ok',
+          handler: () =>
+          {
+            this.navCtrl.pop();
+            this.openSettings.open('location');
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
-  mPerSecondToKmPerHour(speed)
+  addRecord(s_lon: number, s_lat: number, d_lon: number, d_lat: number, time: number, distance: number)
   {
-    return speed * 3.6;
+    this.db.addRecord(s_lon, s_lat, d_lon, d_lat, time, distance)
+      .then(() => { })
+      .catch((e) =>
+      {
+        console.log(e);
+      });
   }
 
 }
