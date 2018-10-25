@@ -9,10 +9,12 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { Geolocation } from '@ionic-native/geolocation';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings';
 import { Insomnia } from '@ionic-native/insomnia';
+import { SQLite } from '@ionic-native/sqlite';
 
 import { MyApp } from './app.component';
 import { DistanceCalculationProvider } from '../providers/distance-calculation/distance-calculation';
 import { DigitConvertorProvider } from '../providers/digit-convertor/digit-convertor';
+import { DatabaseProvider } from '../providers/database/database';
 
 @NgModule({
   declarations: [
@@ -35,10 +37,12 @@ import { DigitConvertorProvider } from '../providers/digit-convertor/digit-conve
     Geolocation,
     OpenNativeSettings,
     Insomnia,
+    SQLite,
 
     // Providers
     DistanceCalculationProvider,
     DigitConvertorProvider,
+    DatabaseProvider,
 
     {provide: ErrorHandler, useClass: IonicErrorHandler},
   ]
