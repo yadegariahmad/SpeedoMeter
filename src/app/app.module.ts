@@ -15,6 +15,7 @@ import { DistanceCalculationProvider } from '../providers/distance-calculation/d
 import { DigitConvertorProvider } from '../providers/digit-convertor/digit-convertor';
 import { DatabaseProvider } from '../providers/database/database';
 import { UnitConvertorProvider } from '../providers/unit-convertor/unit-convertor';
+import { MapProvider } from '../providers/map/map';
 
 @NgModule({
   declarations: [
@@ -42,9 +43,10 @@ import { UnitConvertorProvider } from '../providers/unit-convertor/unit-converto
     DistanceCalculationProvider,
     DigitConvertorProvider,
     DatabaseProvider,
+    UnitConvertorProvider,
+    MapProvider,
 
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    UnitConvertorProvider,
   ]
 })
 export class AppModule {}

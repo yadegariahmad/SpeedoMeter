@@ -1,14 +1,14 @@
 page-calculator {
-  ion-card {
-    height: 87%;
-    background-color: #f2f2f2 !important;
-  }
+  ion-content {
+    height: 100vh;
 
-  .dist-content, .speed-content {
-    height: 10%;
-  }
-
-  .map-content {
-    height: 80%;
+    .dist-content, .speed-content {
+      height: 5%;
+    }
+  
+    #map {
+      height: 65%;
+      width: 100%;
+    }
   }
 }

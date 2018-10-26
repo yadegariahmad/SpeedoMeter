@@ -4,9 +4,9 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { OpenNativeSettings } from '@ionic-native/open-native-settings';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Insomnia } from '@ionic-native/insomnia';
-import { DistanceCalculationProvider, DatabaseProvider, UnitConvertorProvider } from '../../providers';
+import { DistanceCalculationProvider, DatabaseProvider, UnitConvertorProvider, MapProvider } from '../../providers';
 
-declare var L: any;
+declare var OpenLayers: any;
 
 @IonicPage({ name: 'calculation-page' })
 @Component({
@@ -18,6 +18,8 @@ export class CalculatorPage
   calculating = false;
   distanceCovered: number;
   speed: number;
+
+  map: any;
 
   lat1: number;
   lon1: number;
@@ -35,13 +37,16 @@ export class CalculatorPage
 
   constructor(public navCtrl: NavController, private diagnostic: Diagnostic, private alertCtrl: AlertController, private insomnia: Insomnia,
     private openSettings: OpenNativeSettings, private gps: Geolocation, private distCal: DistanceCalculationProvider,
-    private loading: LoadingController, private db: DatabaseProvider, private unitConv: UnitConvertorProvider
+    private loading: LoadingController, private db: DatabaseProvider, private unitConv: UnitConvertorProvider, private mapProvider: MapProvider
   ) { }
 
   ionViewDidLoad()
   {
     this, this.insomnia.keepAwake()
       .then(() => { });
+
+    this.map = new OpenLayers.Map('map');
+    this.map.addLayer(new OpenLayers.Layer.OSM());
 
     this.diagnostic.isGpsLocationEnabled()
       .then(status =>
@@ -79,6 +84,7 @@ export class CalculatorPage
     this.distanceCovered = 0;
     this.speed = 0;
     this.calculating = true;
+    this.mapProvider.plotActivity(this.lat1, this.lon1, this.map);
     this.calculateSpeed();
   }
 
@@ -105,11 +111,10 @@ export class CalculatorPage
           this.lat2 = data.coords.latitude;
           this.lon2 = data.coords.longitude;
 
+          this.mapProvider.plotActivity(this.lat2, this.lon2, this.map);
+
           this.time1 = this.time2;
           this.time2 = date.getTime();
-
-          let mymap = L.map('mapid').setView([51.505, -0.09], 13);
-          console.log('mm: ', mymap)
 
           let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
 

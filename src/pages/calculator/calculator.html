@@ -7,36 +7,27 @@
 
 <ion-content padding>
 
-  <ion-card class="rtl">
-    <ion-card-content>
-      <ion-grid>
-        <ion-row class="dist-content">
-          <ion-col>
-            <ion-label>فاصله پیموده شده:</ion-label>
-          </ion-col>
-          <ion-col>
-            <h2 margin-top float-left ion-text>{{distanceCovered | convertdigit}}</h2>
-          </ion-col>
-        </ion-row>
+  <ion-grid class="rtl">
+    <ion-row class="dist-content">
+      <ion-col>
+        <ion-label>فاصله پیموده شده:</ion-label>
+      </ion-col>
+      <ion-col>
+        <h2 margin-top float-left ion-text>{{distanceCovered | convertdigit}}</h2>
+      </ion-col>
+    </ion-row>
 
-        <ion-row class="speed-content">
-          <ion-col>
-            <ion-label>سرعت:</ion-label>
-          </ion-col>
-          <ion-col>
-            <h2 margin-top float-left ion-text>{{speed | convertdigit}}</h2>
-          </ion-col>
-        </ion-row>
+    <ion-row class="speed-content">
+      <ion-col>
+        <ion-label>سرعت:</ion-label>
+      </ion-col>
+      <ion-col>
+        <h2 margin-top float-left ion-text>{{speed | convertdigit}}</h2>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-        <ion-row class="map-content">
-          <ion-col>
-            <div id="mapid"></div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-
-    </ion-card-content>
-  </ion-card>
+  <div id="map"></div>
 
   <button *ngIf="!calculating" ion-button round full color="danger" (click)="startCalculation()">شروع</button>
   <button *ngIf="calculating" ion-button round full color="danger" (click)="stopCalculation()">پایان</button>
