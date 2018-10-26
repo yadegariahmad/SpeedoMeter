@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-declare var OpenLayers: any;
+declare var ol: any;
 
 @Injectable()
 export class MapProvider
@@ -13,7 +13,9 @@ export class MapProvider
     keyboardZoom: false,
     mouseWheelZoom: false,
     pointer: false,
-    select: false
+    select: false,
+    pinchRotate: false,
+    pinchZoom: false
   };
 
   olControls = {
@@ -23,24 +25,51 @@ export class MapProvider
 
   constructor() { }
 
-  plotActivity(lat: number, long: number, map: any)
+  initMap(lat: number, long: number)
   {
+    let map = new ol.Map({
+      target: 'map',
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM()
+        })
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([long, lat]),
+        zoom: 16
+      }),
+      interactions: ol.interaction.defaults(this.olInteractions),
+      controls: ol.control.defaults(this.olControls)
+    });
 
-    let lonLat = new OpenLayers.LonLat(long, lat)
-      .transform(
-        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-        map.getProjectionObject() // to Spherical Mercator Projection
-      );
+    this.addMarker(lat, long, map);
 
-    let zoom = 16;
+    return map;
+  }
 
-    let markers = new OpenLayers.Layer.Markers("Markers");
-    map.addLayer(markers);
+  setMap(lat: number, long: number, map: any)
+  {
+    this.addMarker(lat, long, map);
+    map.getView().setZoom(16);
+  }
 
-    markers.addMarker(new OpenLayers.Marker(lonLat));
+  addMarker(lat: number, long: number, map: any)
+  {
+    let marker = new ol.Feature({
+      geometry: new ol.geom.Point(
+        ol.proj.fromLonLat([long, lat])
+      )
+    });
 
-    map.setCenter(lonLat, zoom);
+    let vectorSource = new ol.source.Vector({
+      features: [marker]
+    });
 
+    let markerVectorLayer = new ol.layer.Vector({
+      source: vectorSource,
+    });
+
+    map.addLayer(markerVectorLayer);
   }
 
 }

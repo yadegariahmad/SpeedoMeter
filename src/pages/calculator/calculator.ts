@@ -6,7 +6,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { Insomnia } from '@ionic-native/insomnia';
 import { DistanceCalculationProvider, DatabaseProvider, UnitConvertorProvider, MapProvider } from '../../providers';
 
-declare var OpenLayers: any;
+declare var ol: any;
 
 @IonicPage({ name: 'calculation-page' })
 @Component({
@@ -45,9 +45,6 @@ export class CalculatorPage
     this, this.insomnia.keepAwake()
       .then(() => { });
 
-    this.map = new OpenLayers.Map('map');
-    this.map.addLayer(new OpenLayers.Layer.OSM());
-
     this.diagnostic.isGpsLocationEnabled()
       .then(status =>
       {
@@ -63,6 +60,8 @@ export class CalculatorPage
             {
               this.lat1 = this.lat2 = this.s_lat = data.coords.latitude;
               this.lon1 = this.lon2 = this.s_lon = data.coords.longitude;
+
+              this.map = this.mapProvider.initMap(this.lat1, this.lon1);
 
               loading.dismiss();
               this.startCalculation();
@@ -84,7 +83,6 @@ export class CalculatorPage
     this.distanceCovered = 0;
     this.speed = 0;
     this.calculating = true;
-    this.mapProvider.plotActivity(this.lat1, this.lon1, this.map);
     this.calculateSpeed();
   }
 
@@ -111,7 +109,7 @@ export class CalculatorPage
           this.lat2 = data.coords.latitude;
           this.lon2 = data.coords.longitude;
 
-          this.mapProvider.plotActivity(this.lat2, this.lon2, this.map);
+          this.mapProvider.setMap(this.lat2, this.lon2, this.map);
 
           this.time1 = this.time2;
           this.time2 = date.getTime();
