@@ -1,75 +1,51 @@
 import { Injectable } from '@angular/core';
 
-declare var ol: any;
+import * as L from 'leaflet';
 
 @Injectable()
 export class MapProvider
 {
-  olInteractions = {
-    doubleClickZoom: false,
-    dragAndDrop: false,
-    dragPan: false,
-    keyboardPan: false,
-    keyboardZoom: false,
-    mouseWheelZoom: false,
-    pointer: false,
-    select: false,
-    pinchRotate: false,
-    pinchZoom: false
-  };
-
-  olControls = {
-    attribution: false,
-    zoom: false
-  };
+  marker: any;
 
   constructor() { }
 
   initMap(lat: number, long: number)
   {
-    let map = new ol.Map({
-      target: 'map',
-      layers: [
-        new ol.layer.Tile({
-          source: new ol.source.OSM()
-        })
-      ],
-      view: new ol.View({
-        center: ol.proj.fromLonLat([long, lat]),
-        zoom: 16
-      }),
-      interactions: ol.interaction.defaults(this.olInteractions),
-      controls: ol.control.defaults(this.olControls)
-    });
+    let map = L.map('map').setView([lat, long], 18);
 
-    this.addMarker(lat, long, map);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox.streets',
+      accessToken: 'pk.eyJ1IjoieWFkZWdhcmlhaG1hZCIsImEiOiJjam5xNGZtYWIxbGtxM2ttcXFraGFyYmpxIn0.1HaKpJpaDTwweiHTGwg1lQ'
+    }).addTo(map);
+
+    // this.disableIntractions(map);
+
+    this.setMap(lat, long, map);
 
     return map;
   }
 
   setMap(lat: number, long: number, map: any)
   {
-    this.addMarker(lat, long, map);
-    map.getView().setZoom(16);
+    if (this.marker)
+    {
+      map.removeLayer(this.marker);
+    }
+
+    this.marker = L.marker([lat, long]).addTo(map);
   }
 
-  addMarker(lat: number, long: number, map: any)
+  disableIntractions(map)
   {
-    let marker = new ol.Feature({
-      geometry: new ol.geom.Point(
-        ol.proj.fromLonLat([long, lat])
-      )
-    });
-
-    let vectorSource = new ol.source.Vector({
-      features: [marker]
-    });
-
-    let markerVectorLayer = new ol.layer.Vector({
-      source: vectorSource,
-    });
-
-    map.addLayer(markerVectorLayer);
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+    map.boxZoom.disable();
+    map.keyboard.disable();
+    if (map.tap) map.tap.disable();
   }
 
 }

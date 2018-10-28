@@ -123,9 +123,9 @@ export class CalculatorPage
           this.totalTime += duration;
 
           this.speed = +this.unitConv.mPerSecondToKmPerHour(Math.floor(distance / duration)).toFixed(1);
-          distance = +(distance / 1000).toFixed(2);
+          distance = distance / 1000;
 
-          this.distanceCovered += distance;
+          this.distanceCovered += +distance.toFixed(2);
 
           this.calculateSpeed();
         });
