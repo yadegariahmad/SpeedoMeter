@@ -6,8 +6,6 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { Insomnia } from '@ionic-native/insomnia';
 import { DistanceCalculationProvider, DatabaseProvider, UnitConvertorProvider, MapProvider } from '../../providers';
 
-declare var ol: any;
-
 @IonicPage({ name: 'calculation-page' })
 @Component({
   selector: 'page-calculator',

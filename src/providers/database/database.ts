@@ -33,7 +33,7 @@ export class DatabaseProvider
             d_lat real not null,
             _time real,
             distance real
-          )`)
+          )`, [])
           .then(() =>
           {
             console.log('The table history was successfully created');
@@ -54,7 +54,7 @@ export class DatabaseProvider
   {
     return new Promise((resolve, reject) =>
     {
-      this._DB.executeSql('SELECT * FROM history')
+      this._DB.executeSql('SELECT * FROM history', [])
         .then((data: any) =>
         {
           let items: any[] = [];
@@ -94,7 +94,7 @@ export class DatabaseProvider
       let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance)
         VALUES(${s_lon}, ${s_lat}, ${d_lon}, ${d_lat}, ${time}, ${distance})`;
         
-      this._DB.executeSql(sql)
+      this._DB.executeSql(sql, [])
         .then(() =>
         {
           resolve(true);
