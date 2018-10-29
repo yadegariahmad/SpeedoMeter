@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
-import { UnitConvertorProvider } from '../unit-convertor/unit-convertor';
 
 @Injectable()
 export class DatabaseProvider
 {
   _DB: SQLiteObject;
 
-  constructor(private _SQL: SQLite, private _PLAT: Platform, private convertor: UnitConvertorProvider)
+  constructor(private _SQL: SQLite, private _PLAT: Platform)
   {
     this._PLAT.ready()
       .then(() =>
@@ -34,7 +33,7 @@ export class DatabaseProvider
             d_lat real,
             _time real,
             distance real,
-            date string
+            [date] string
           )`, [])
           .then(() =>
           {
@@ -56,10 +55,10 @@ export class DatabaseProvider
   {
     return new Promise((resolve, reject) =>
     {
+      let a = '';
       this._DB.executeSql('SELECT * FROM history', [])
         .then((data: any) =>
         {
-          console.log('db data: ', data)
           let items: any[] = [];
           if (data.rows.length > 0)
           {
@@ -70,15 +69,16 @@ export class DatabaseProvider
             for (k = 0; k < data.rows.length; k++)
             {
               let item = data.rows.item(k);
+              console.log('item: ', item)
               items.push(
                 {
                   s_lon: item.s_lon,
                   s_lat: item.s_lat,
                   d_lon: item.d_lon,
                   d_lat: item.d_lat,
-                  time: item._time,
+                  time: (<string>item._time),
                   distance: item.distance,
-                  date: item.date
+                  date: item._date
                 });
             }
           }
@@ -95,7 +95,8 @@ export class DatabaseProvider
   {
     return new Promise((resolve, reject) =>
     {
-      let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance, date)
+      console.log('date2: ', date)
+      let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance, [date])
         VALUES(${s_lon}, ${s_lat}, ${d_lon}, ${d_lat}, ${time}, ${distance}, ${date})`;
         
       this._DB.executeSql(sql, [])

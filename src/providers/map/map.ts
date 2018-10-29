@@ -34,6 +34,7 @@ export class MapProvider
       map.removeLayer(this.marker);
     }
 
+    map.setView([lat, long], 18);
     this.marker = L.marker([lat, long]).addTo(map);
   }
 

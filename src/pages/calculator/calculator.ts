@@ -19,6 +19,7 @@ export class CalculatorPage
   speed: number;
 
   map: any;
+  timer: any;
 
   lat1: number;
   lon1: number;
@@ -82,16 +83,23 @@ export class CalculatorPage
     this.distanceCovered = 0;
     this.speed = 0;
     this.calculating = true;
+    this.timer = setInterval(() =>
+    {
+      this.totalTime += 1;
+    }, 1000);
     this.calculateSpeed();
   }
 
   stopCalculation()
   {
+    clearInterval(this.timer);
     this.calculating = false;
     this.d_lat = this.lat2;
     this.d_lon = this.lon2;
     let date = moment().format('jYYYY/jMM/jDD');
-    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, date);
+    console.log('TT: ', this.totalTime)
+    this.totalTime = this.unitConv.secondToMinute(Math.floor(this.totalTime));
+    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, <string>date);
   }
 
   calculateSpeed()
@@ -120,7 +128,6 @@ export class CalculatorPage
 
           let timeDiffer = this.time2 - this.time1;
           duration = this.unitConv.msToSecond(timeDiffer);
-          this.totalTime += duration;
 
           this.speed = +this.unitConv.mPerSecondToKmPerHour(Math.floor(distance / duration)).toFixed(1);
           distance = distance / 1000;

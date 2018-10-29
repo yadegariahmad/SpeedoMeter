@@ -5,18 +5,20 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding class="history-page">
   <h1 *ngIf="history.length == 0">Empty ...</h1>
 
   <ion-list>
     <ion-card class="rtl" *ngFor="let item of history">
       <ion-row>
         <ion-col>از: {{item.s_lat}}, {{item.s_lon}}</ion-col>
+      </ion-row>
+      <ion-row>
         <ion-col>تا: {{item.d_lat}}, {{item.d_lon}}</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>فاصله: {{item.distance}}</ion-col>
-        <ion-col>مدت زمان: {{item.time}}</ion-col>
+        <ion-col>فاصله: {{item.distance}} کیلومتر</ion-col>
+        <ion-col>مدت زمان: {{item.time}} دقیقه</ion-col>
       </ion-row>
       <ion-row>
         <ion-col>تاریخ: {{item.date}}</ion-col>

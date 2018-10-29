@@ -18,6 +18,7 @@ export class HistoryPage
     const loader = this.loading.create({
       content: 'لطفا صبر کنید ...'
     });
+    loader.present();
 
     this.db.retrieveRecords()
       .then((records) =>
