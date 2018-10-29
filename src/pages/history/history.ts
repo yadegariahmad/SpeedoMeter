@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController } from 'ionic-angular';
+import { IonicPage, NavController, LoadingController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 
 @IonicPage({ name: 'history-page' })
@@ -11,18 +11,25 @@ export class HistoryPage
 {
   history: any[] = [];
 
-  constructor(public navCtrl: NavController, private db: DatabaseProvider) { }
+  constructor(public navCtrl: NavController, private db: DatabaseProvider, private loading: LoadingController) { }
 
   ionViewDidLoad()
   {
+    const loader = this.loading.create({
+      content: 'لطفا صبر کنید ...'
+    });
+
     this.db.retrieveRecords()
-      .then((records: any) =>
+      .then((records) =>
       {
         this.history = records;
+        console.log(this.history)
+        loader.dismiss();
       })
       .catch((e) =>
       {
-        console.log(e)
+        console.log(e);
+        loader.dismiss();
       });
   }
 

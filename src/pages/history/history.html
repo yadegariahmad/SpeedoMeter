@@ -1,12 +1,27 @@
 <ion-header>
-
   <ion-navbar>
-    <ion-title>history</ion-title>
+    <ion-title>تاریخچه</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content padding>
-  <div id="map" style="height: 100vh; width: 100vh"></div>
+  <h1 *ngIf="history.length == 0">Empty ...</h1>
+
+  <ion-list>
+    <ion-card class="rtl" *ngFor="let item of history">
+      <ion-row>
+        <ion-col>از: {{item.s_lat}}, {{item.s_lon}}</ion-col>
+        <ion-col>تا: {{item.d_lat}}, {{item.d_lon}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>فاصله: {{item.distance}}</ion-col>
+        <ion-col>مدت زمان: {{item.time}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>تاریخ: {{item.date}}</ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-list>
+
 </ion-content>

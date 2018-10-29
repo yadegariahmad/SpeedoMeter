@@ -5,6 +5,7 @@ import { OpenNativeSettings } from '@ionic-native/open-native-settings';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Insomnia } from '@ionic-native/insomnia';
 import { DistanceCalculationProvider, DatabaseProvider, UnitConvertorProvider, MapProvider } from '../../providers';
+import * as moment from 'moment-jalaali';
 
 @IonicPage({ name: 'calculation-page' })
 @Component({
@@ -89,7 +90,8 @@ export class CalculatorPage
     this.calculating = false;
     this.d_lat = this.lat2;
     this.d_lon = this.lon2;
-    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered);
+    let date = moment().format('jYYYY/jMM/jDD');
+    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, date);
   }
 
   calculateSpeed()
@@ -157,9 +159,9 @@ export class CalculatorPage
     alert.present();
   }
 
-  addRecord(s_lon: number, s_lat: number, d_lon: number, d_lat: number, time: number, distance: number)
+  addRecord(s_lon: number, s_lat: number, d_lon: number, d_lat: number, time: number, distance: number, date: string)
   {
-    this.db.addRecord(s_lon, s_lat, d_lon, d_lat, time, distance)
+    this.db.addRecord(s_lon, s_lat, d_lon, d_lat, time, distance, date)
       .then(() => { })
       .catch((e) =>
       {
