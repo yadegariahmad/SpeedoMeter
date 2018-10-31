@@ -94,14 +94,31 @@ export class DatabaseProvider
   {
     return new Promise((resolve, reject) =>
     {
-      console.log('date2: ', date)
       let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance, _date)
         VALUES(${s_lon}, ${s_lat}, ${d_lon}, ${d_lat}, ${time}, ${distance}, '${date}')`;
-        
+
       this._DB.executeSql(sql, [])
         .then(() =>
         {
           console.log('data was added')
+          resolve(true);
+        })
+        .catch((error: any) =>
+        {
+          reject(error);
+        });
+    });
+  }
+
+  deleteAllRecords()
+  {
+    return new Promise((resolve, reject) =>
+    {
+      let sql = `DELETE FROM history`;
+
+      this._DB.executeSql(sql, [])
+        .then(() =>
+        {
           resolve(true);
         })
         .catch((error: any) =>

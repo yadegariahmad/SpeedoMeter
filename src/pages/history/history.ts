@@ -10,7 +10,6 @@ import { DatabaseProvider } from '../../providers/database/database';
 export class HistoryPage
 {
   history: any[] = [];
-  error: any;
 
   constructor(public navCtrl: NavController, private db: DatabaseProvider, private loading: LoadingController) { }
 
@@ -30,9 +29,16 @@ export class HistoryPage
       .catch((e) =>
       {
         console.log(e);
-        this.error = e;
         loader.dismiss();
       });
   }
 
+  clearHistory()
+  {
+    this.db.deleteAllRecords()
+      .then(() =>
+      {
+        this.history = [];
+      });
+  }
 }

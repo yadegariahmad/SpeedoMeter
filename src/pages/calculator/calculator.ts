@@ -69,7 +69,6 @@ export class CalculatorPage
             .catch(error =>
             {
               loading.dismiss();
-              this.alertCtrl.create({ message: error });
             });
         } else
         {
@@ -98,7 +97,7 @@ export class CalculatorPage
     this.d_lon = this.lon2;
     let date = moment().format('jYYYY/jMM/jDD');
     this.totalTime = +this.unitConv.secondToMinute(Math.floor(this.totalTime)).toFixed(2);
-    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, <string>date);
+    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, date);
   }
 
   calculateSpeed()
@@ -130,8 +129,9 @@ export class CalculatorPage
 
           this.speed = +this.unitConv.mPerSecondToKmPerHour(Math.floor(distance / duration)).toFixed(1);
           distance = distance / 1000;
+          distance = +distance.toFixed(2);
 
-          this.distanceCovered += +distance.toFixed(2);
+          this.distanceCovered += distance;
 
           this.calculateSpeed();
         });

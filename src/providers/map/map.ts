@@ -20,8 +20,6 @@ export class MapProvider
       accessToken: 'pk.eyJ1IjoieWFkZWdhcmlhaG1hZCIsImEiOiJjam5xNGZtYWIxbGtxM2ttcXFraGFyYmpxIn0.1HaKpJpaDTwweiHTGwg1lQ'
     }).addTo(map);
 
-    // this.disableIntractions(map);
-
     this.setMap(lat, long, map);
 
     return map;

@@ -1,6 +1,11 @@
 <ion-header>
   <ion-navbar>
     <ion-title>تاریخچه</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="clearHistory()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -9,8 +14,6 @@
   <div *ngIf="history.length == 0" text-center text-justify>
     <ion-label>Empty ...</ion-label>
   </div>
-
-  <h3>{{error}}</h3>
 
   <ion-list>
     <ion-card class="rtl" *ngFor="let item of history">
