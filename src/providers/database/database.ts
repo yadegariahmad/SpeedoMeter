@@ -33,7 +33,7 @@ export class DatabaseProvider
             d_lat real,
             _time real,
             distance real,
-            [date] string
+            _date varchar(100)
           )`, [])
           .then(() =>
           {
@@ -55,7 +55,6 @@ export class DatabaseProvider
   {
     return new Promise((resolve, reject) =>
     {
-      let a = '';
       this._DB.executeSql('SELECT * FROM history', [])
         .then((data: any) =>
         {
@@ -76,7 +75,7 @@ export class DatabaseProvider
                   s_lat: item.s_lat,
                   d_lon: item.d_lon,
                   d_lat: item.d_lat,
-                  time: (<string>item._time),
+                  time: item._time,
                   distance: item.distance,
                   date: item._date
                 });
@@ -96,8 +95,8 @@ export class DatabaseProvider
     return new Promise((resolve, reject) =>
     {
       console.log('date2: ', date)
-      let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance, [date])
-        VALUES(${s_lon}, ${s_lat}, ${d_lon}, ${d_lat}, ${time}, ${distance}, ${date})`;
+      let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance, _date)
+        VALUES(${s_lon}, ${s_lat}, ${d_lon}, ${d_lat}, ${time}, ${distance}, '${date}')`;
         
       this._DB.executeSql(sql, [])
         .then(() =>

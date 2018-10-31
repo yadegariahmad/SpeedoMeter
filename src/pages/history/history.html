@@ -6,7 +6,11 @@
 
 
 <ion-content padding class="history-page">
-  <h1 *ngIf="history.length == 0">Empty ...</h1>
+  <div *ngIf="history.length == 0" text-center text-justify>
+    <ion-label>Empty ...</ion-label>
+  </div>
+
+  <h3>{{error}}</h3>
 
   <ion-list>
     <ion-card class="rtl" *ngFor="let item of history">

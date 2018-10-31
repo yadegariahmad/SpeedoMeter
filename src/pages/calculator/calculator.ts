@@ -97,8 +97,7 @@ export class CalculatorPage
     this.d_lat = this.lat2;
     this.d_lon = this.lon2;
     let date = moment().format('jYYYY/jMM/jDD');
-    console.log('TT: ', this.totalTime)
-    this.totalTime = this.unitConv.secondToMinute(Math.floor(this.totalTime));
+    this.totalTime = +this.unitConv.secondToMinute(Math.floor(this.totalTime)).toFixed(2);
     this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, <string>date);
   }
 
