@@ -18,10 +18,10 @@
   <ion-list>
     <ion-card class="rtl" *ngFor="let item of history">
       <ion-row>
-        <ion-col>از: {{item.s_lat}}, {{item.s_lon}}</ion-col>
+        <ion-col (click)="showMap(item.s_lat, item.s_lon)">از:<h5 ion-text color="primary"> {{item.s_lat}}, {{item.s_lon}}</h5></ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>تا: {{item.d_lat}}, {{item.d_lon}}</ion-col>
+        <ion-col (click)="showMap(item.d_lat, item.d_lon)">تا:<h5 ion-text color="primary"> {{item.d_lat}}, {{item.d_lon}}</h5></ion-col>
       </ion-row>
       <ion-row>
         <ion-col>فاصله: {{item.distance}} کیلومتر</ion-col>

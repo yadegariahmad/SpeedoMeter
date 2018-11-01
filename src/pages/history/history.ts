@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, LoadingController, ModalController } from 'ionic-angular';
 import { DatabaseProvider } from '../../providers/database/database';
 
 @IonicPage({ name: 'history-page' })
@@ -11,7 +11,7 @@ export class HistoryPage
 {
   history: any[] = [];
 
-  constructor(public navCtrl: NavController, private db: DatabaseProvider, private loading: LoadingController) { }
+  constructor(public navCtrl: NavController, private db: DatabaseProvider, private loading: LoadingController, private modalCtrl: ModalController) { }
 
   ionViewDidLoad()
   {
@@ -40,5 +40,12 @@ export class HistoryPage
       {
         this.history = [];
       });
+  }
+
+  showMap(lat: number, lon: number)
+  {
+    let data = { lat: lat, lon: lon };
+    let modalPage = this.modalCtrl.create('map-modal', data);
+    modalPage.present();
   }
 }
