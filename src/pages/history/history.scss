@@ -1,5 +1,17 @@
 page-history {
   ion-content {
     background: #e7ebf0 !important;
+
+    ion-card {
+      border-left: 3px solid !important;
+
+      &:nth-child(odd) {
+        border-left-color: red !important;
+      }
+
+      &:nth-child(even) {
+        border-left-color: greenyellow !important;
+      }
+    }
   }
 }
