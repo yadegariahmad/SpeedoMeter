@@ -7,6 +7,12 @@ import { Insomnia } from '@ionic-native/insomnia';
 import { DistanceCalculationProvider, DatabaseProvider, UnitConvertorProvider, MapProvider } from '../../providers';
 import * as moment from 'moment-jalaali';
 
+export interface DistanceTime
+{
+  distance: number,
+  time: number
+}
+
 @IonicPage({ name: 'calculation-page' })
 @Component({
   selector: 'page-calculator',
@@ -17,6 +23,7 @@ export class CalculatorPage
   calculating = false;
   distanceCovered: number;
   speed: number;
+  distanceTimeArr: Array<DistanceTime> = new Array<DistanceTime>();
 
   map: any;
   timer: any;
@@ -91,13 +98,17 @@ export class CalculatorPage
 
   stopCalculation()
   {
-    clearInterval(this.timer);
     this.calculating = false;
+    clearInterval(this.timer);
+
     this.d_lat = this.lat2;
     this.d_lon = this.lon2;
+
     let date = moment().format('jYYYY/jMM/jDD');
     this.totalTime = +this.unitConv.secondToMinute(Math.floor(this.totalTime)).toFixed(2);
-    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, date);
+
+    const averageSpeed = +this.calculateAverageSpeed(this.distanceTimeArr).toFixed(2);
+    this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, averageSpeed, date);
   }
 
   calculateSpeed()
@@ -127,8 +138,11 @@ export class CalculatorPage
           let timeDiffer = this.time2 - this.time1;
           duration = this.unitConv.msToSecond(timeDiffer);
 
+          this.distanceTimeArr.push({ distance: distance, time: duration }); // distance in meter, time in second
+
           this.speed = +this.unitConv.mPerSecondToKmPerHour(Math.floor(distance / duration)).toFixed(1);
           distance = distance / 1000;
+
 
           this.distanceCovered += distance;
           this.distanceCovered = +this.distanceCovered.toFixed(2);
@@ -165,9 +179,9 @@ export class CalculatorPage
     alert.present();
   }
 
-  addRecord(s_lon: number, s_lat: number, d_lon: number, d_lat: number, time: number, distance: number, date: string)
+  addRecord(s_lon: number, s_lat: number, d_lon: number, d_lat: number, time: number, distance: number, averageSpeed: number, date: string)
   {
-    this.db.addRecord(s_lon, s_lat, d_lon, d_lat, time, distance, date)
+    this.db.addRecord(s_lon, s_lat, d_lon, d_lat, time, distance, averageSpeed, date)
       .then(() => { })
       .catch((e) =>
       {
@@ -175,4 +189,30 @@ export class CalculatorPage
       });
   }
 
+  calculateAverageSpeed(input: DistanceTime[])
+  {
+    let totalT = 0;
+    let average = 0;
+
+    for (let i = 0; i < input.length; i++)
+    {
+      totalT += input[i].time;
+    }
+
+    for (let i = 0; i < input.length; i++)
+    {
+      average += input[i].distance / totalT;
+    }
+
+    average = this.unitConv.mPerSecondToKmPerHour(average);
+    return average;
+  }
+
+  ionViewDidLeave()
+  {
+    if (this.calculating)
+    {
+      this.stopCalculation();
+    }
+  }
 }

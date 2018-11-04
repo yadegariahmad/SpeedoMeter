@@ -29,10 +29,11 @@
       </ion-row>
       <ion-row>
         <ion-col>فاصله: {{item.distance}} کیلومتر</ion-col>
-        <ion-col>مدت زمان: {{item.time}} دقیقه</ion-col>
+        <ion-col>میانگین سرعت: {{item.avgSpeed | convertdigit}} km/h</ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>تاریخ: {{item.date}}</ion-col>
+        <ion-col>مدت زمان: {{item.time | convertdigit}} دقیقه</ion-col>
+        <ion-col>تاریخ: {{item.date | convertdigit}}</ion-col>
       </ion-row>
     </ion-card>
   </ion-list>

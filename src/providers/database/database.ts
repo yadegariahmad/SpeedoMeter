@@ -33,6 +33,7 @@ export class DatabaseProvider
             d_lat real,
             _time real,
             distance real,
+            averageSpeed real,
             _date varchar(100)
           )`, [])
           .then(() =>
@@ -68,7 +69,6 @@ export class DatabaseProvider
             for (k = 0; k < data.rows.length; k++)
             {
               let item = data.rows.item(k);
-              console.log('item: ', item)
               items.push(
                 {
                   s_lon: item.s_lon,
@@ -77,6 +77,7 @@ export class DatabaseProvider
                   d_lat: item.d_lat,
                   time: item._time,
                   distance: item.distance,
+                  avgSpeed: item.averageSpeed,
                   date: item._date
                 });
             }
@@ -90,17 +91,16 @@ export class DatabaseProvider
     });
   }
 
-  addRecord(s_lon: number, s_lat: number, d_lon: number, d_lat: number, time: number, distance: number, date: string): Promise<any>
+  addRecord(s_lon: number, s_lat: number, d_lon: number, d_lat: number, time: number, distance: number, avgSpeed: number, date: string): Promise<any>
   {
     return new Promise((resolve, reject) =>
     {
-      let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance, _date)
-        VALUES(${s_lon}, ${s_lat}, ${d_lon}, ${d_lat}, ${time}, ${distance}, '${date}')`;
+      let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance, averageSpeed, _date)
+        VALUES(${s_lon}, ${s_lat}, ${d_lon}, ${d_lat}, ${time}, ${distance}, ${avgSpeed}, '${date}')`;
 
       this._DB.executeSql(sql, [])
         .then(() =>
         {
-          console.log('data was added')
           resolve(true);
         })
         .catch((error: any) =>
