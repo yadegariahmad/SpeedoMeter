@@ -191,20 +191,17 @@ export class CalculatorPage
 
   calculateAverageSpeed(input: DistanceTime[])
   {
+    let totalD = 0;
     let totalT = 0;
     let average = 0;
 
     for (let i = 0; i < input.length; i++)
     {
       totalT += input[i].time;
+      totalD += input[i].distance;
     }
 
-    for (let i = 0; i < input.length; i++)
-    {
-      average += input[i].distance / totalT;
-    }
-
-    average = this.unitConv.mPerSecondToKmPerHour(average);
+    average = this.unitConv.mPerSecondToKmPerHour(totalD / totalT);
     return average;
   }
 
