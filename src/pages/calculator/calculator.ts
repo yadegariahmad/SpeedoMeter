@@ -108,6 +108,7 @@ export class CalculatorPage
     this.totalTime = +this.unitConv.secondToMinute(Math.floor(this.totalTime)).toFixed(2);
 
     const averageSpeed = +this.calculateAverageSpeed(this.distanceTimeArr).toFixed(2);
+    console.log('stopCalculation: ', averageSpeed);
     this.addRecord(this.s_lon, this.s_lat, this.d_lon, this.d_lat, this.totalTime, this.distanceCovered, averageSpeed, date);
   }
 
@@ -132,13 +133,14 @@ export class CalculatorPage
           this.time2 = date.getTime();
 
           let distance = this.distCal.calcDistance(this.lat1, this.lon1, this.lat2, this.lon2);
-
+     
           let duration = 0;
-
+          
           let timeDiffer = this.time2 - this.time1;
           duration = this.unitConv.msToSecond(timeDiffer);
-
+          
           this.distanceTimeArr.push({ distance: distance, time: duration }); // distance in meter, time in second
+          console.log('calculateSpeed: ', this.distanceTimeArr);
 
           this.speed = +this.unitConv.mPerSecondToKmPerHour(Math.floor(distance / duration)).toFixed(1);
           distance = distance / 1000;
@@ -195,13 +197,16 @@ export class CalculatorPage
     let totalT = 0;
     let average = 0;
 
-    for (let i = 0; i < input.length; i++)
+    for (let i = 1; i < input.length; i++)
     {
       totalT += input[i].time;
       totalD += input[i].distance;
     }
 
-    average = this.unitConv.mPerSecondToKmPerHour(totalD / totalT);
+    console.log('T: ', totalT, ' D: ', totalD);
+
+    average = totalD / totalT;
+    average = this.unitConv.mPerSecondToKmPerHour(average);
     return average;
   }
 

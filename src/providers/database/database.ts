@@ -93,6 +93,7 @@ export class DatabaseProvider
 
   addRecord(s_lon: number, s_lat: number, d_lon: number, d_lat: number, time: number, distance: number, avgSpeed: number, date: string): Promise<any>
   {
+    console.log('addRecords: ', avgSpeed)
     return new Promise((resolve, reject) =>
     {
       let sql = `INSERT INTO history(s_lon, s_lat, d_lon, d_lat, _time, distance, averageSpeed, _date)
