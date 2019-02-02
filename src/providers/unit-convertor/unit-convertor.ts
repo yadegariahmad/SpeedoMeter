@@ -30,4 +30,16 @@ export class UnitConvertorProvider
     return retVal;
   }
 
+  /**
+   * Converts degree to radiant
+   * @param {number} degree angle in degree
+   */
+  degreeToRadiant(degree: number)
+  {
+    let retVal: number;
+    retVal = degree * Math.PI / 180.0;
+
+    return retVal;
+  }
+
 }
